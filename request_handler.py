@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from views import get_all_animals
 import json
+from views import get_single_animal, get_all_animals
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -60,22 +60,20 @@ class HandleRequests(BaseHTTPRequestHandler):
     # Here's a method on the class that overrides the parent's method.
     # It handles any GET request.
     def do_GET(self):
-        """Handles GET requests to the server
-        """
-        # Set the response code to 'Ok'
         self._set_headers(200)
+        response = {}  # Default response
 
-        # Your new console.log() that outputs to the terminal
-        print(self.path)
+        # Parse the URL and capture the tuple that is returned
+        (resource, id) = self.parse_url(self.path)
 
-        # It's an if..else statement
-        if self.path == "/animals":
-            response = get_all_animals()
-        else:
-            response = []
+        if resource == "animals":
+            if id is not None:
+                response = get_single_animal(id)
 
-        # This weird code sends a response back to the client
-        self.wfile.write(f"{response}".encode())
+            else:
+                response = get_all_animals()
+
+        self.wfile.write(json.dumps(response).encode())
 
     # Here's a method on the class that overrides the parent's method.
     # It handles any POST request.

@@ -24,6 +24,8 @@ ANIMALS = [
 
 # Function with a single parameter
 def get_single_animal(id):
+    """Docstring
+    """
     # Variable to hold the found animal, if it exists
     requested_animal = None
 
@@ -38,4 +40,6 @@ def get_single_animal(id):
     return requested_animal
 
 def get_all_animals():
+    """Docstring
+    """
     return ANIMALS

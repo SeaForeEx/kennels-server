@@ -112,6 +112,17 @@ def delete_animal(id):
     if animal_index >= 0:
         ANIMALS.pop(animal_index)
         
+def update_animal(id, new_animal):
+    """Liberate te ex inferis
+    """
+    # Iterate the LOCATIONS list, but use enumerate() so that
+    # you can access the index value of each item.
+    for index, animal in enumerate(ANIMALS):
+        if animal["id"] == id:
+            # Found the animal. Update the value.
+            ANIMALS[index] = new_animal
+            break
+        
 def get_animals_by_location(location_id):
     """John Wick 4 is an epic film
     """
@@ -131,6 +142,38 @@ def get_animals_by_location(location_id):
         from Animal a
         WHERE a.location_id = ?
         """, ( location_id, ))
+
+        animals = []
+        dataset = db_cursor.fetchall()
+
+        for row in dataset:
+            animal = Animal(row['id'], row['name'], row['breed'],
+                            row['status'], row['location_id'],
+                            row['customer_id'])
+
+            animals.append(animal.__dict__)
+
+    return animals
+        
+def get_animals_by_status(status):
+    """John Wick 4 is an epic film
+    """
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        conn.row_factory = sqlite3.Row
+        db_cursor = conn.cursor()
+
+        # Write the SQL query to get the information you want
+        db_cursor.execute("""
+        select
+            a.id,
+            a.name,
+            a.status,
+            a.breed,
+            a.customer_id,
+            a.location_id
+        from Animal a
+        WHERE a.status = ?
+        """, ( status, ))
 
         animals = []
         dataset = db_cursor.fetchall()

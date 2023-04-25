@@ -1,7 +1,7 @@
 import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse, parse_qs
-from views import get_single_animal, get_all_animals, create_animal, delete_animal, update_animal, get_animals_by_location, get_single_location, get_all_locations, create_location, delete_location, update_location, get_single_employee, get_all_employees, create_employee, update_employee, delete_employee, get_single_customer, get_all_customers, create_customer, delete_customer, update_customer, get_customer_by_email
+from views import get_single_animal, get_all_animals, create_animal, delete_animal, update_animal, get_animals_by_status, get_animals_by_location, get_single_location, get_all_locations, create_location, delete_location, update_location, get_single_employee, get_all_employees, create_employee, update_employee, delete_employee, get_employees_by_location, get_single_customer, get_all_customers, create_customer, delete_customer, update_customer, get_customer_by_email, get_customer_by_name
 
 # Here's a class. It inherits from another class.
 # For now, think of a class as a container for functions that
@@ -103,8 +103,14 @@ class HandleRequests(BaseHTTPRequestHandler):
             # see if the query dictionary has an email key
             if query.get('email') and resource == 'customers':
                 response = get_customer_by_email(query['email'][0])
+            elif query.get('name') and resource == 'customers':
+                response = get_customer_by_name(query['name'][0])
             elif query.get('location_id') and resource == 'animals':
                 response = get_animals_by_location(query['location_id'][0])
+            elif query.get('location_id') and resource == 'employees':
+                response = get_employees_by_location(query['location_id'][0])
+            elif query.get('status') and resource == 'animals':
+                response = get_animals_by_status(query['status'][0])
 
         self.wfile.write(json.dumps(response).encode())
 

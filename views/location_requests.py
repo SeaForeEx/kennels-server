@@ -1,16 +1,3 @@
-# LOCATIONS = [
-#     {
-#         "id": 1,
-#         "name": "Nashville North",
-#         "address": "8422 Johnson Pike"
-#     },
-#     {
-#         "id": 2,
-#         "name": "Nashville South",
-#         "address": "209 Emory Drive"
-#     }
-# ]
-
 import sqlite3
 import json
 from models import Location
@@ -110,12 +97,28 @@ def delete_location(id):
         """, (id, ))
 
 def update_location(id, new_location):
-    """Liberate te ex inferis
+    """We will forever be high fidelity
     """
-    # Iterate the LOCATIONS list, but use enumerate() so that
-    # you can access the index value of each item.
-    for index, location in enumerate(LOCATIONS):
-        if location["id"] == id:
-            # Found the animal. Update the value.
-            LOCATIONS[index] = new_location
-            break
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
+
+        db_cursor.execute("""
+        UPDATE Location
+            SET
+                name = ?,
+                address = ?
+        WHERE id = ?
+        """, (new_location['name'],
+              new_location['address'], id, ))
+
+        # Were any rows affected?
+        # Did the client send an `id` that exists?
+        rows_affected = db_cursor.rowcount
+
+    # return value of this function
+    if rows_affected == 0:
+        # Forces 404 response by main module
+        return False
+    else:
+        # Forces 204 response by main module
+        return True

@@ -69,18 +69,21 @@ SELECT
     a.location_id,
     a.customer_id
 FROM animal a
-WHERE a.id = 3
+WHERE a.id = 5
 
 SELECT
     c.id,
-    c.name
+    c.name,
+		c.address,
+		c.email,
+		c.password
 FROM customer c
 WHERE c.id = 1
 
 SELECT
     e.id,
     e.name
-FROM employee a
+FROM employee e
 WHERE a.id = 2
 
 SELECT

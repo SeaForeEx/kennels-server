@@ -15,7 +15,10 @@ def get_single_customer(id):
         db_cursor.execute("""
         SELECT
             c.id,
-            c.name
+            c.name,
+            c.address,
+            c.email,
+            c.password
         FROM customer c
         WHERE c.id = ?
         """, ( id, ))
@@ -24,7 +27,7 @@ def get_single_customer(id):
         data = db_cursor.fetchone()
 
         # Create an animal instance from the current row
-        customer = Customer(row['id'], row['name'], row['address'], row['email'], row['password'])
+        customer = Customer(data['id'], data['name'], data['address'], data['email'], data['password'])
 
         return customer.__dict__
 
@@ -42,7 +45,10 @@ def get_all_customers():
         db_cursor.execute("""
         SELECT
             c.id,
-            c.name
+            c.name,
+            c.address,
+            c.email,
+            c.password
         FROM customer c
         """)
 
@@ -84,21 +90,15 @@ def create_customer(customer):
     return customer
 
 def delete_customer(id):
-    """The Mighty Avengers
+    """Graham is still eating supper
     """
-    # Initial -1 value for customer index, in case one isn't found
-    customer_index = -1
+    with sqlite3.connect("./kennel.sqlite3") as conn:
+        db_cursor = conn.cursor()
 
-    # Iterate the ANIMALS list, but use enumerate() so that you
-    # can access the index value of each item
-    for index, customer in enumerate(CUSTOMERS):
-        if customer["id"] == id:
-            # Found the animal. Store the current index.
-            customer_index = index
-
-    # If the animal was found, use pop(int) to remove it from list
-    if customer_index >= 0:
-        CUSTOMERS.pop(customer_index)
+        db_cursor.execute("""
+        DELETE FROM customer
+        WHERE id = ?
+        """, (id, ))
         
 def update_customer(id, new_customer):
     """Liberate te ex inferis

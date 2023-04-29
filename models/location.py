@@ -8,5 +8,3 @@ class Location():
         self.id = id
         self.name = name
         self.address = address
-        
-new_location = Location(3, "Frothy Monkey", "153 Smith Skreet")

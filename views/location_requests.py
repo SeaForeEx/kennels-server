@@ -16,16 +16,37 @@ def get_single_location(id):
         SELECT
             l.id,
             l.name,
-            l.address
+            l.address,
+            e.name employee_name,
+            e.address employee_address,
+            e.location_id employee_location_id,
+            a.name animal_name,
+            a.breed animal_breed,
+            a.status animal_status,
+            a.location_id animal_location_id,
+            a.customer_id animal_customer_id,
         FROM location l
+        JOIN employee e
+            ON l.id = e.location_id
+        JOIN animal a
+            ON l.id = a.location_id
         WHERE l.id = ?
         """, ( id, ))
 
         # Load the single result into memory
         data = db_cursor.fetchone()
 
-        # Create an animal instance from the current row
+        # Create an location instance from the current row
         location = Location(data['id'], data['name'], data['address'])
+        
+        # Create an location instance from the current row
+        employee = Employee(data['id'], data['employee_name'], data['employee_address'], data['employee_location_id'])
+        
+        # Create an animal instance from the current row
+        animal = Animal(data['id'], data['animal_name'], data['animal_breed'], data['animal_status'], data ['animal_location_id'], data['animal_customer_id'])
+        
+        location.employee = employee.__dict__
+        location.animal = animal.__dict__
 
         return location.__dict__
 

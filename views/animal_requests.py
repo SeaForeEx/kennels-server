@@ -80,7 +80,7 @@ def get_all_animals():
             # Create a Location instance from the current row
             location = Location(row['id'], row['location_name'], row['location_address'])
             
-            customer = Customer(row['id'], row['customer_name'], row['customer_address'], row['customer_address'])
+            customer = Customer(row['id'], row['customer_name'], row['customer_address'], row['customer_email'])
 
             # Add the dictionary representation of the location to the animal
             animal.location = location.__dict__
@@ -225,7 +225,7 @@ def get_animals_by_status(status):
 
     return animals
         
-def search(term):
+def search_animals(term):
     """let's see if this works
     """
     # Open a connection to the database
@@ -233,7 +233,7 @@ def search(term):
 
         search_query = f"%{term}%"
         
-        # Just use these. It's a Black Box.
+        # These two lines configure the connection to return query results as rows that can be accessed by column name.
         conn.row_factory = sqlite3.Row
         db_cursor = conn.cursor()
         
@@ -256,8 +256,8 @@ def search(term):
             ON l.id = a.location_id
         JOIN Customer c
             ON c.id = a.customer_id
-        WHERE a.name LIKE ?
-        """, (search_query,))
+        WHERE a.name LIKE ? OR a.breed LIKE ?
+        """, (search_query,search_query))
         
         # Initialize an empty list to hold all animal representations
         animals = []
